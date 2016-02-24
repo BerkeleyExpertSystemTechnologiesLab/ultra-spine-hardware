@@ -1,0 +1,1 @@
+Code in Julia for the two-link, fully-actuated prototoype of the Flemons model of a tensegrity spine, controlled with servo motors and a Raspberry Pi.
