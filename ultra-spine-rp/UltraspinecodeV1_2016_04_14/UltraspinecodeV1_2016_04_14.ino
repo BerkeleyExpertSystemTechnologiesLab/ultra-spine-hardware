@@ -18,7 +18,7 @@ int motor2B = 21;
 int motor4B = 22; 
 int motor4A = 23;
 int led = 13; 
-float delayMotion = 10000;
+float delayMotion = 1000;
 void setup() {
   
   // Declare pins  
@@ -42,11 +42,19 @@ void setup() {
 //motor3 false (CCW) - bottom left hind legs away
 //motor4 **Check again!
 
+// Motor 4: shoulders, top
+// Motor 2: shoulders, bottom
+
 void loop() {
-LightFunction(); 
-Motor4(true,250); 
-LightFunction(); 
-delay(delayMotion); 
+  LightFunction(); 
+  Motor1(false,250); 
+  delay(delayMotion); 
+  StopMotors();
+  LightFunction();
+  Motor1(true,250);
+  delay(delayMotion);
+  StopMotors();
+  
 
 //   StopMotors();
 //   LightFunction();
@@ -140,7 +148,7 @@ void StopMotors() {
 }
 void LightFunction() {
 digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);               // wait for a second
+  delay(100);               // wait for a second
   digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);               // wait for a second
+  delay(100);               // wait for a second
 }
