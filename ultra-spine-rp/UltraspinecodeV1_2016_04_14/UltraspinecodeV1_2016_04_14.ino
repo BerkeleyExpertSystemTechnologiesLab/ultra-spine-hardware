@@ -34,7 +34,11 @@ void setup() {
 }
 
 
+// Motor 4: shoulders, top
+// Motor 2: shoulders, bottom
+
 void loop() {
+
 StopMotors();
 LightFunction();
 Motor4(true,200);
@@ -51,6 +55,16 @@ StopMotors();
 LightFunction();
 Motor2(true,200);
 delay(delayMotion);  
+
+  LightFunction(); 
+  Motor1(false,250); 
+  delay(delayMotion); 
+  StopMotors();
+  LightFunction();
+  Motor1(true,250);
+  delay(delayMotion);
+  StopMotors();
+ 
 
 }
 
@@ -111,7 +125,7 @@ void StopMotors() {
 }
 void LightFunction() {
 digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);               // wait for a second
+  delay(100);               // wait for a second
   digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);               // wait for a second
+  delay(100);               // wait for a second
 }
