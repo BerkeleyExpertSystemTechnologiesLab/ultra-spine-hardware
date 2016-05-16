@@ -1,5 +1,4 @@
-#include <SoftwareSerial.h>
-
+//#include <SoftwareSerial.h>
 //#include <Encoder.h>
 //#include <SoftwareSerial.h>
 
@@ -18,7 +17,7 @@ int motor2B = 21;
 int motor4B = 22; 
 int motor4A = 23;
 int led = 13; 
-float delayMotion = 10000;
+float delayMotion = 1000;
 void setup() {
   
   // Declare pins  
@@ -26,7 +25,6 @@ void setup() {
   pinMode(motor1B, OUTPUT); 
   pinMode(motor3B, OUTPUT); 
   pinMode(motor3A, OUTPUT); 
-
   pinMode(motor2A, OUTPUT); 
   pinMode(motor2B, OUTPUT); 
   pinMode(motor4B, OUTPUT); 
@@ -34,53 +32,26 @@ void setup() {
   pinMode(led, OUTPUT);  
   
 }
-//motor1 false (CW) - bottom left hind legs towards head
-//motor1 true (CCW) - bottom left hind legs away from head
-//motor2 false (CCW) - top left front legs away
-//motor2 true (CW) - top left front legs toward
-//motor3 true (CW) - bottom left hind legs toward
-//motor3 false (CCW) - bottom left hind legs away
-//motor4 **Check again!
+
 
 void loop() {
-LightFunction(); 
-Motor4(true,250); 
-LightFunction(); 
-delay(delayMotion); 
+StopMotors();
+LightFunction();
+Motor4(true,200);
+delay(delayMotion);
+StopMotors();
+LightFunction();
+Motor4(false,200);
+delay(delayMotion);  
+StopMotors(); 
+LightFunction();
+Motor2(false,200); 
+delay(delayMotion);
+StopMotors();
+LightFunction();
+Motor2(true,200);
+delay(delayMotion);  
 
-//   StopMotors();
-//   LightFunction();
-//   Motor1(true,200); 
-//   delay(delayMotion);
-//   StopMotors();
-//   LightFunction();
-//   Motor1(false,200);
-//   delay(delayMotion);  
-//   StopMotors(); 
-//   LightFunction();
-//   Motor2(true,200); 
-//   delay(delayMotion);
-//   StopMotors();
-//   LightFunction();
-//   Motor2(false,200);
-//   delay(delayMotion);  
-//   StopMotors(); 
-//   LightFunction();
-//   Motor3(true,200); 
-//   delay(delayMotion);
-//   StopMotors();
-//   LightFunction();
-//   Motor3(false,200);
-//   delay(delayMotion);  
-//   StopMotors(); 
-//   LightFunction();
-//   Motor4(true,200); 
-//   delay(delayMotion);
-//   StopMotors();
-//   LightFunction();
-//   Motor4(false,200);
-//   delay(delayMotion);  
-//   StopMotors(); 
 }
 
 void Motor1(bool dir, int spd){
