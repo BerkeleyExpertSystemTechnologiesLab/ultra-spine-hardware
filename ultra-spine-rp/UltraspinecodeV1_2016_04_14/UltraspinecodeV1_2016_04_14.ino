@@ -56,15 +56,6 @@ LightFunction();
 Motor2(true,200);
 delay(delayMotion);  
 
-  LightFunction(); 
-  Motor1(false,250); 
-  delay(delayMotion); 
-  StopMotors();
-  LightFunction();
-  Motor1(true,250);
-  delay(delayMotion);
-  StopMotors();
- 
 
 }
 
