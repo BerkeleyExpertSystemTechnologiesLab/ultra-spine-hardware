@@ -1,9 +1,0 @@
-From the UC Davis canine lab results on 2016-08-01:
-
-Fz is the front leg. Back leg is Fz1.
-
-binned_data = [ db_fll_llop_Fz_mean, db_frl_llop_Fz_mean; db_fll_rlop_Fz_mean, db_frl_rlop_Fz_mean; db_fll_llop_Fz1_mean_adjusted, db_frl_llop_Fz1_mean_adjusted; db_fll_rlop_Fz1_mean_adjusted, db_frl_rlop_Fz1_mean_adjusted];
-
-binned_std = [ db_fll_llop_Fz_std, db_frl_llop_Fz_std; db_fll_rlop_Fz_std, db_frl_rlop_Fz_std; db_fll_llop_Fz1_std, db_frl_llop_Fz1_std; db_fll_rlop_Fz1_std, db_frl_rlop_Fz1_std];
-
-xlabel('Front Left      Front Right      Back Left      Back Right');

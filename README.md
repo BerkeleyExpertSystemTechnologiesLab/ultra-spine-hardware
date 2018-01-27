@@ -1,9 +1,10 @@
 # ultra-spine-hardware
 Hardware code for the Underactuated Lightweight Tensegrity Robotic Assistive Spine (ULTRA Spine.) This repository is for the embedded systems software for the physical robot.
 
-Code is organized in the following folders:
+Please see the spine_v1 branch for the code from 2014-2015, for simple Arduino control of the motors.
+See the spherical-tensegrity library for the motor wireless communication and motor PID control via Arduino/Teensy.
 
-- ultra-spine-rp: Embedded software for the rapid-prototype version of ULTRA Spine.
-At the moment, this is written in Arduino C.
-
-- full-spine-v0_1: Code in Julia for the two-link, fully-actuated prototoype of the Flemons model of a tensegrity spine, controlled with servo motors and a Raspberry Pi.
+As of 2018-01-27, this repository contains:
+	- laika_v1: code for the arduino-based Laika control, focusing on combinations of lifting specific legs.
+	
+	
