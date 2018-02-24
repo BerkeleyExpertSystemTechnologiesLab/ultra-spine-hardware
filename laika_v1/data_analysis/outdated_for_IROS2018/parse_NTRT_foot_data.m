@@ -52,6 +52,13 @@ foot_B_global = (front_global + leg_B_local + sphere_local + global_offset)';
 % Plot the four positions to see if this makes sense.
 feet_global = [foot_A_global, foot_B_global, foot_C_global, foot_D_global];
 
+% In addition, NTRT's "zero" is really at some higher distance, AND,
+% the center of the sphere is not the point that contacts the bottom.
+% It seems as if the "zero height" of the feet, or the "touching the
+% ground" of the feet, is at
+feet_initial_Z = foot_A_global(2);
+% ...we can subtract this back in later.
+
 % Important: get the (approx?) global initial center of mass of each 
 % compound rigid (the shoulders, and the hips). This is because
 % Bullet doesn't let us specify a local frame, and instead
@@ -65,6 +72,7 @@ shoulders_global_COM = whole_body_pos(1,:)';
 % We can now find the local vector between the rigid body's COM and
 % the feet.
 A_from_COM = foot_A_global - shoulders_global_COM;
+B_from_COM = foot_B_global - shoulders_global_COM;
 
 % OK, so... we should now be able to calculate the foot positions 
 % by the following:
@@ -72,27 +80,66 @@ A_from_COM = foot_A_global - shoulders_global_COM;
 % body at that timestep
 % (2) add the global COM back in
 
+% Store the positions.
+% Do this more intelligently, as column vectors.
+footA_pos = zeros(size(whole_body_pos))';
+footB_pos = zeros(size(whole_body_pos))';
+
 % At each timestep:
 for i = 1: size(whole_body_pos, 1)
     % Form the rotation matrix
     t = whole_body_rot(i, 1);
     g = whole_body_rot(i, 2);
-    p = whl
+    p = whole_body_rot(i, 3);
     R1 = [ 1          0           0         ;
-           0          cos(T(i))   sin(T(i)) ;
-           0         -sin(T(i))   cos(T(i))];
+           0          cos(t)   sin(t) ;
+           0         -sin(t)   cos(t)];
 
-    R2 = [cos(G(i))   0           sin(G(i)) ;
+    R2 = [cos(g)   0           sin(g) ;
           0           1           0         ;
-         -sin(G(i))   0           cos(G(i))];
+         -sin(g)   0           cos(g)];
 
-    R3 = [cos(P(i))   sin(P(i))   0         ;
-         -sin(P(i))   cos(P(i))   0         ;
+    R3 = [cos(p)   sin(p)   0         ;
+         -sin(p)   cos(p)   0         ;
           0           0           1        ];
-      disp('2%')
-
     % Building full Rotation Matrix
     Rot=R3*R2*R1;
+    
+    % Get the rotation of the local foot->COM vector
+    A_rotated = Rot * A_from_COM;
+    B_rotated = Rot * B_from_COM;
+    % Add back the global COM of the body, store.
+    % Need to transpose data matrix.
+    footA_pos(:,i) = A_rotated + whole_body_pos(i,:)';
+    footB_pos(:,i) = B_rotated + whole_body_pos(i,:)';
+    % Subtract away the initial height of the feet.
+    footA_pos(2,i) = footA_pos(2,i) - feet_initial_Z;
+    footB_pos(2,i) = footB_pos(2,i) - feet_initial_Z;
+end
+
+%plot3(footA_pos(1,:), footA_pos(2,:), footA_pos(3,:));
+
+% some plotting
+figure;
+hold on;
+plot(footA_pos(3,:));
+title('Foot A positions');
+
+figure;
+hold on;
+plot(footB_pos(3,:));
+title('Foot B positions');
+
+
+
+
+
+
+
+
+
+
+
 
 
 
