@@ -13,38 +13,33 @@ function [ markerdata ] = parseNTRTFootMarkerData( filepaths, make_plots )
 % The column to read is different for each foot marker.
 % For the respective test, the column with the Y data for its marker is:
 % (example, "3" is column "4" in excel)
-markerYcols = [3, 6, 9, 12];
+% BUT now that we're reading in to a matlab matrix, index from 1.
+markerYcols = [4, 7, 10, 13];
 
 % Read in all the data. We'll need to concatenate / index the Y positions
 % against the actual rotations, so need column 2 for everything also.
-alldatatemp = csvread( filepaths.A, 2, markerYcols(1));
-markerdata{1} = alldatatemp(
+% So just start from column 0.
+alldatatemp = csvread( filepaths.A, 2, 0);
+% but now as a matrix we index from 1.
+markerdata{1} = [alldatatemp(:,2), alldatatemp(:, markerYcols(1))];
+% For all other feet:
+alldatatemp = csvread( filepaths.B, 2, 0);
+markerdata{2} = [alldatatemp(:,2), alldatatemp(:, markerYcols(2))];
+alldatatemp = csvread( filepaths.C, 2, 0);
+markerdata{3} = [alldatatemp(:,2), alldatatemp(:, markerYcols(3))];
+alldatatemp = csvread( filepaths.D, 2, 0);
+markerdata{4} = [alldatatemp(:,2), alldatatemp(:, markerYcols(4))];
 
-return
-
-% For each of these, read in the data for each of these logs
-%for i=1:4
-    % Call csvread
-%    markerdata{i}.data = csvread( markerdata{i}.path, 1, 0);
-    % Adjust the data. All rows except the timestamp
-%end
-
-% Combine the results, maybe this is used for testing of the whole robot
-num_samples = size(markerdata{1}.data, 1);
-% Record the totals for x, y, and z directions, plus time.
-markerdata{5}.data = zeros(num_samples, 4);
-% But we also need to copy over the timestamps for column 1.
-% Arbitrarily choose the first set of data from which to copy the timestamps.
-markerdata{5}.data(:,1) = markerdata{1}.data(:,1);
-for i=1:4
-    % Copy over the x, y, and z, columns 2, 3, 4
-    markerdata{5}.data(:,2) = markerdata{5}.data(:,2) + markerdata{i}.data(:,2);
-    markerdata{5}.data(:,3) = markerdata{5}.data(:,3) + markerdata{i}.data(:,3);
-    markerdata{5}.data(:,4) = markerdata{5}.data(:,4) + markerdata{i}.data(:,4);
-end
-
+% now that we have the rotation/ foot lift data, plot some combinations of
+% it:
 if( make_plots )
-    % Plot the forces in x, y, z for each forceplate.
+    % Here's the plan:
+    % - Rotation along the x-axis
+    % - Foot height along the y-axis
+    % - Curves are for both +/- rotations, where we then have two plots: one
+    % for A/D, the other for B/C, where one of each lifts in quadrants 1,2.
+    % - Vertical line plotted where hardware was observed to lift a foot.
+    
     % Here are some good dimensions of figures:
     % fontsize = 12;
     %set(gca, 'FontSize', fontsize);
@@ -57,32 +52,25 @@ if( make_plots )
     % ACTUALLY, NO: it seems that the openGL renderer outputs raster images! No!
     % Need to use the default painter.
     
-    % X: This is actually "Y" in the UC Davis notation. This is the interesting one, in the lateral direction.
-    %xhandle = figure('Renderer', 'opengl');
-    xhandle = figure;
-    % Similar to the Y data, only plot a certain region.
-    % Ignore the beginning of the simulation, 
-    % since it has to settle down first.
-    % Start the plots at:
-    tstart = 5;
-    % End the plots at:
-    % Used to be
-    tend = 22;
-    % The dt for these simulations is roughly:
+    %%%%%%%% FOR THE A/D PLOT
+    
+    adhandle = figure;
+    % Specify the starting and ending index for the data.
+    % This is like "what time to start measuring at, what time to stop."
+    % Let's choose 5 seconds for the start for all:
     dt = 0.01;
-    % Number of timesteps to get to tstart seconds:
-    timestep_start = tstart/dt;
-    timestep_end = tend/dt;
+    tstart = 5;
+    startIndex = tstart/dt;
+    % For the end, in the A/D plots, things looked good up until about 26 or
+    % 27 seconds, which is 
+    finalindex = 2650;
     hold on;
+    
     % Set up the plot
     set(gca, 'FontSize', fontsize);
     set(xhandle,'Position',[100,100,500,350]);
     set(xhandle,'PaperPosition',[1,1,5.8,3.5]);
-    for i=1:4
-        % create the modified time vector.
-        t_temp_x = markerdata{i}.data(timestep_start:timestep_end,1);
-        % subtract away the start time.
-        t_temp_x = t_temp_x - tstart;
+    
         % X data is column 2
         x_temp = markerdata{i}.data(timestep_start:timestep_end,2);
         % plot t vs. y for each plate
@@ -92,8 +80,8 @@ if( make_plots )
         markerdata{i}.t_foranalysis_x = t_temp_x;
         markerdata{i}.x_foranalysis = x_temp;
         % plot t vs. x for each plate
-        %plot( fpdata{i}.data(:,1), fpdata{i}.data(:,2) )
-    end
+        %plot( fpdata{i}.data(:,1), fpdata{i}.data(:,2) 
+    
     title('NTRTsim ForcePlate Lateral Forces (Fy)');
     ylabel('Force Fy (N)');
     xlabel('Time (sec)');
@@ -206,15 +194,7 @@ if( make_plots )
     xlabel('Time (sec)');
     legend('RearLeft', 'RearRight', 'FrontLeft', 'FrontRight' );
     hold off;
-    
-    % Plot the total Fy, for perspective on how much the robot weighs.
-%     figure;
-%     hold on;
-%     plot( fpdata{5}.data(:,1), fpdata{5}.data(:,3) );
-%     title('Total forces in Y, NTRT force plates, vs. time');
-%     ylabel('Force Fy (N)');
-%     xlabel('Time (sec)');
-%     hold off;
+
 end
 
 
