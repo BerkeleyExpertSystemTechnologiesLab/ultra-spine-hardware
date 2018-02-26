@@ -26,4 +26,18 @@ filename = 'motor_data_ramp_dt01_tt_20_max_pi8';
 % Laika IROS 2018: For lifting feet A and D (front right, back left)
 max = -pi/32; % radians
 filename = 'motor_data_ramp_dt01_tt_20_max_neg_pi32';
+%example_data = motor_data_ramp(sampling_time, total_time, max, filename);
+
+% Laika IROS 2018, SI units model: trajectory up to pi/4.
+% Keep the same speed though (go up to 40 sec of motion.)
+total_time = 40.0;
+max = pi/4; % radians
+filename = 'motor_data_ramp_dt01_tt_40_max_pi4';
+%example_data = motor_data_ramp(sampling_time, total_time, max, filename);
+
+% Laika IROS 2018, SI units model: trajectory up to pi/4.
+% Keep the same speed though (go up to 40 sec of motion.)
+total_time = 40.0;
+max = -pi/4; % radians
+filename = 'motor_data_ramp_dt01_tt_40_max_neg_pi4';
 example_data = motor_data_ramp(sampling_time, total_time, max, filename);
