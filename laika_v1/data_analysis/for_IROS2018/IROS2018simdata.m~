@@ -16,7 +16,7 @@ addpath('./hline_vline');
 
 % The log file base path:
 % we assume we're using the data in this repository
-logfile_base = './NTRTdata/footlifting_90percent_horiz/SI/LaikaIROS2018MarkerData';
+logfile_base = './NTRTdata/footlifting_90percent_horiz/LaikaIROS2018MarkerData/SI';
 
 % We're going for four files, one from each foot lifting test. 
 % Specify the names and timestamps, as a little struct.
@@ -30,8 +30,8 @@ logfile_base = './NTRTdata/footlifting_90percent_horiz/SI/LaikaIROS2018MarkerDat
 % For the SI units model:
 tA = '02262018_131202';
 tB = '02262018_131253';
-tC = '02262018_132328';
-tD = '02262018_132652';
+tC = '02262018_1321';
+tD = '02262018_132628';
 
 % We can now build up the paths to each file
 filepaths.A = strcat(logfile_base, 'A_0.9_', tA, '.txt');
