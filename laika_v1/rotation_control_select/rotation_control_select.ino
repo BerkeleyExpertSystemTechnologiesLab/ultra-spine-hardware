@@ -1,3 +1,8 @@
+// Laika motor rotation testing - manual setpoints, with delay
+// Kimberly A. Sover and Jesus Navarro
+// BEST Lab, Feb. 2018
+
+// Reminder: Laika's motors have GND as the red, rightmost wire in the flat cable.
 
 // Default to motor 1
 int InA1 = 6;                   // INA motor pin
