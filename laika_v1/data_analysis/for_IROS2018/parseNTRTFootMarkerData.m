@@ -126,11 +126,15 @@ if( make_plots )
     
     % The x-axis point is the first-column of the data at the lifted_X
     % index
+    % Print these to the terminal for recording later
+    lifted_A_rad = markerdata{1}(lifted_A, 1)
+    lifted_D_rad = markerdata{4}(lifted_D, 1)
     % Credit to Brandon Kuczenski for the vline function
-    vline( markerdata{1}(lifted_A, 1), 'b--', 'lift',18);
-    vline( markerdata{4}(lifted_D, 1), 'r--', 'lift',18);
+    vline( lifted_A_rad, 'b--', 'lift',18);
+    vline( lifted_D_rad, 'r--', 'lift',18);
     %vline(12, 'k--', 't_2',18);
     %vline(17, 'k--', 't_3',18);
+    
     hold off;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -195,9 +199,13 @@ if( make_plots )
     
     % The x-axis point is the first-column of the data at the lifted_X
     % index
+    % Print these to the terminal for recording later
+    lifted_B_rad = markerdata{2}(lifted_B, 1)
+    lifted_C_rad = markerdata{3}(lifted_C, 1)
+    
     % Credit to Brandon Kuczenski for the vline function
-    vline( markerdata{2}(lifted_B, 1), '--', 'lift',18);
-    vline( markerdata{3}(lifted_C, 1), '--', 'lift',18);
+    vline( lifted_B_rad, '--', 'lift',18);
+    vline( lifted_C_rad, '--', 'lift',18);
     %vline(12, 'k--', 't_2',18);
     %vline(17, 'k--', 't_3',18);
     hold off;
