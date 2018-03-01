@@ -44,7 +44,7 @@ filepaths.D = strcat(logfile_base, 'D_0.9_', tD, '.txt');
 make_plots = 1;
 
 % Call the parser function
-[markerdata, footHWdata] = parseNTRTFootMarkerData(filepaths, logfile_hardware_base, make_plots);
+[markerdata, footHWdata, hwTimes, hwLiftAngles] = parseNTRTFootMarkerData(filepaths, logfile_hardware_base, make_plots);
 
 
 

@@ -1,4 +1,4 @@
-function [ markerdata, footHWdata ] = parseNTRTFootMarkerData( filepaths, logfile_hardware_base, make_plots )
+function [ markerdata, footHWdata, hwTimes, hwLiftAngles ] = parseNTRTFootMarkerData( filepaths, logfile_hardware_base, make_plots )
 %parseNTRTForcePlateData.m
 %   Parses and plots the data from all 4 foot-lifting tests of Laika in
 %   NTRT, for IROS 2018
@@ -55,6 +55,52 @@ end
 
 % Great. Now, let's make a big 2D array of the timepoints at which the legs
 % lift.
+% File is in same folder as data, and has name
+hwTimesCSV = strcat(logfile_hardware_base, 'foot lifting times from hw videos.csv');
+% Data starts at 4th? row (index from 0 makes it 3?), columns 3-5 (2-4)
+hwTimes = csvread(hwTimesCSV, 3, 2);
+
+% Let's pull out the seconds-from-start and convert to ms for use with
+% Kim's data from the serial terminal. 5 tests each for 4 legs 
+hwTimes = reshape(hwTimes(:,3), 5, 4) .* 1000;
+% Transpose it so we have rows = feet, col = test
+hwTimes = hwTimes';
+
+% For each test, find the corresponding lift in radians.
+hwLiftAngles = zeros(size(hwTimes));
+
+for i=1:4
+    % for this foot
+    for j=1:5
+        % for this test
+        % The index of the first row that's at the time we desire will be
+        % (recall, footHWdata{foot}{test}, hwTimes(foot, test)
+        timeIndex = find( footHWdata{i}{j}(:,1) > hwTimes(i,j), 1)
+        % The time data from the arduino has gaps along when the foot
+        % settles.
+        % So, it's most appropriate to take the "just before" time, since
+        % for example 8.5 sec (video) -> 8.01 sec (serial data), as 8.01
+        % sec would be when the radians command was issued, and the extra
+        % 0.49 sec is for the robot settling at its new position, which
+        % would only be reflected in the video AFTER setting.
+        % HOWEVER, for certain tests, this wraps over. So, just set to max.
+        if( size(timeIndex) == [0 1] )
+            % number of rows.
+            timeIndex = size(footHWdata{i}{j}, 1); 
+        end
+        timeIndex = timeIndex - 1;
+        % Then, the lift angle will be at this index, on the second row, in
+        % rad.
+        hwLiftAngles(i,j) = footHWdata{i}{j}(timeIndex, 2);
+    end
+end
+
+% note, these are in terms of output shaft rotations for the motor.
+% need to convert via the gear ratio of the center gear, which is 
+% 0.625 inch / 1.5 inch, or
+gearratio = 0.625 / 1.5; % 0.4167
+% and adjust all the hw lift angles
+hwLiftAngles = hwLiftAngles .* gearratio;
 
 % now that we have the rotation/ foot lift data, plot some combinations of
 % it:
@@ -134,32 +180,50 @@ if( make_plots )
     legend('Foot A, Left Bend (Sim)', 'Foot D, Right Bend (Sim)', 'Location', 'Best');
     % Set the limits:
     ylim([0 5]);
-    xlim([0 0.5]);
+    %xlim([0 0.5]);
     
-    % Draw vertical lines for the places where we first observe the feet to
-    % lift.
-    % Specify some 'epsilon' for 'has lifted'. In cm.
-    eps_lifted = 0.1;
-    % get the index for the element which is larger than this epsilon.
-    % The greater-than operator returns a list of bools, so we find the
-    % first "true", subject to our index range constraints.
-    %markerdata{1}(startIndex:finalIndexA,2) 
-    lifted_A = find(markerdata{1}(startIndex:finalIndexA,2) > eps_lifted, 1);
-    lifted_D = find(markerdata{4}(startIndex:finalIndexD,2) > eps_lifted, 1);
-    % These need to be incremented by startIndex, since that's offset
-    lifted_A = lifted_A + startIndex;
-    lifted_D = lifted_D + startIndex;
+    %%%%%% SIMULATION VERTICAL LINES
+%     % Draw vertical lines for the places where we first observe the feet to
+%     % lift.
+%     % Specify some 'epsilon' for 'has lifted'. In cm.
+%     eps_lifted = 0.1;
+%     % get the index for the element which is larger than this epsilon.
+%     % The greater-than operator returns a list of bools, so we find the
+%     % first "true", subject to our index range constraints.
+%     %markerdata{1}(startIndex:finalIndexA,2) 
+%     lifted_A = find(markerdata{1}(startIndex:finalIndexA,2) > eps_lifted, 1);
+%     lifted_D = find(markerdata{4}(startIndex:finalIndexD,2) > eps_lifted, 1);
+%     % These need to be incremented by startIndex, since that's offset
+%     lifted_A = lifted_A + startIndex;
+%     lifted_D = lifted_D + startIndex;
+%     
+%     % The x-axis point is the first-column of the data at the lifted_X
+%     % index
+%     % Print these to the terminal for recording later
+%     lifted_A_rad = markerdata{1}(lifted_A, 1)
+%     lifted_D_rad = markerdata{4}(lifted_D, 1)
+%     % Credit to Brandon Kuczenski for the vline function
+%     vline( lifted_A_rad, 'b--', 'lift',18);
+%     vline( lifted_D_rad, 'r--', 'lift',18);
+%     %vline(12, 'k--', 't_2',18);
+%     %vline(17, 'k--', 't_3',18);
+
+
+    %%%%%% HARDWARE VERTICAL LINES
     
-    % The x-axis point is the first-column of the data at the lifted_X
-    % index
-    % Print these to the terminal for recording later
-    lifted_A_rad = markerdata{1}(lifted_A, 1)
-    lifted_D_rad = markerdata{4}(lifted_D, 1)
-    % Credit to Brandon Kuczenski for the vline function
-    vline( lifted_A_rad, 'b--', 'lift',18);
-    vline( lifted_D_rad, 'r--', 'lift',18);
-    %vline(12, 'k--', 't_2',18);
-    %vline(17, 'k--', 't_3',18);
+    % Min and max test lift angles for A
+    % A is negative angles
+    liftMinA = - max(hwLiftAngles(1,:));
+    liftMaxA = - min(hwLiftAngles(1,:));
+    % for D, also negative
+    liftMinD = - max(hwLiftAngles(4,:));
+    liftMaxD = - min(hwLiftAngles(4,:));
+    
+    % Plot temporarily in blue for A and red for D
+    vline( liftMinA, 'b--', 'lift',18);
+    vline( liftMaxA, 'b--', 'lift',18);
+    vline( liftMinD, 'r--', 'lift',18);
+    vline( liftMaxD, 'r--', 'lift',18);
     
     hold off;
     
@@ -206,35 +270,52 @@ if( make_plots )
     legend('Foot B, Left Bend (Sim)', 'Foot C, Right Bend (Sim)', 'Location', 'Best');
     % Set the limits:
     ylim([0 5]);
-    xlim([0 0.5]);
+    %xlim([0 0.5]);
     
     
-    % Draw vertical lines for the places where we first observe the feet to
-    % lift.
-    % Specify some 'epsilon' for 'has lifted'. In cm.
-    eps_lifted = 0.1;
-    % get the index for the element which is larger than this epsilon.
-    % The greater-than operator returns a list of bools, so we find the
-    % first "true", subject to our index range constraints.
-    %markerdata{1}(startIndex:finalIndexA,2) 
-    lifted_B = find(markerdata{2}(startIndex:finalIndexB,2) > eps_lifted, 1);
-    lifted_C = find(markerdata{3}(startIndex:finalIndexC,2) > eps_lifted, 1);
-    % These need to be incremented by startIndex, since that's offset
-    lifted_B = lifted_B + startIndex;
-    lifted_C = lifted_C + startIndex;
+    %%%%%%%%%%% SIMULATION VERTICAL LINES
+%     % Draw vertical lines for the places where we first observe the feet to
+%     % lift.
+%     % Specify some 'epsilon' for 'has lifted'. In cm.
+%     eps_lifted = 0.1;
+%     % get the index for the element which is larger than this epsilon.
+%     % The greater-than operator returns a list of bools, so we find the
+%     % first "true", subject to our index range constraints.
+%     %markerdata{1}(startIndex:finalIndexA,2) 
+%     lifted_B = find(markerdata{2}(startIndex:finalIndexB,2) > eps_lifted, 1);
+%     lifted_C = find(markerdata{3}(startIndex:finalIndexC,2) > eps_lifted, 1);
+%     % These need to be incremented by startIndex, since that's offset
+%     lifted_B = lifted_B + startIndex;
+%     lifted_C = lifted_C + startIndex;
+%     
+%     % The x-axis point is the first-column of the data at the lifted_X
+%     % index
+%     % Print these to the terminal for recording later
+%     lifted_B_rad = markerdata{2}(lifted_B, 1)
+%     lifted_C_rad = markerdata{3}(lifted_C, 1)
+%     
+%     % Credit to Brandon Kuczenski for the vline function
+%     vline( lifted_B_rad, '--', 'lift',18);
+%     vline( lifted_C_rad, '--', 'lift',18);
+%     %vline(12, 'k--', 't_2',18);
+%     %vline(17, 'k--', 't_3',18);
+%     hold off;
+
+    %%%%%% HARDWARE VERTICAL LINES
     
-    % The x-axis point is the first-column of the data at the lifted_X
-    % index
-    % Print these to the terminal for recording later
-    lifted_B_rad = markerdata{2}(lifted_B, 1)
-    lifted_C_rad = markerdata{3}(lifted_C, 1)
+    % Min and max test lift angles for B
+    % B is positive angles
+    liftMaxB = max(hwLiftAngles(2,:));
+    liftMinB = min(hwLiftAngles(2,:));
+    % for C, positive
+    liftMaxC = max(hwLiftAngles(3,:));
+    liftMinC = min(hwLiftAngles(3,:));
     
-    % Credit to Brandon Kuczenski for the vline function
-    vline( lifted_B_rad, '--', 'lift',18);
-    vline( lifted_C_rad, '--', 'lift',18);
-    %vline(12, 'k--', 't_2',18);
-    %vline(17, 'k--', 't_3',18);
-    hold off;
+    % Plot temporarily in yellow for B and magenta for C
+    vline( liftMinB, 'y--', 'lift',18);
+    vline( liftMaxB, 'y--', 'lift',18);
+    vline( liftMinC, 'm--', 'lift',18);
+    vline( liftMaxC, 'm--', 'lift',18);
 
 end
 
