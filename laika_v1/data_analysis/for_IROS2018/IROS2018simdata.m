@@ -17,6 +17,7 @@ addpath('./hline_vline');
 % The log file base path:
 % we assume we're using the data in this repository
 logfile_base = './NTRTdata/footlifting_90percent_horiz/SI/LaikaIROS2018MarkerData';
+logfile_hardware_base = './HardwareExperimentData/';
 
 % We're going for four files, one from each foot lifting test. 
 % Specify the names and timestamps, as a little struct.
@@ -43,7 +44,7 @@ filepaths.D = strcat(logfile_base, 'D_0.9_', tD, '.txt');
 make_plots = 1;
 
 % Call the parser function
-markerdata = parseNTRTFootMarkerData(filepaths, make_plots);
+[markerdata, footHWdata] = parseNTRTFootMarkerData(filepaths, logfile_hardware_base, make_plots);
 
 
 

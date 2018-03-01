@@ -1,4 +1,4 @@
-function [ markerdata ] = parseNTRTFootMarkerData( filepaths, make_plots )
+function [ markerdata, footHWdata ] = parseNTRTFootMarkerData( filepaths, logfile_hardware_base, make_plots )
 %parseNTRTForcePlateData.m
 %   Parses and plots the data from all 4 foot-lifting tests of Laika in
 %   NTRT, for IROS 2018
@@ -9,6 +9,8 @@ function [ markerdata ] = parseNTRTFootMarkerData( filepaths, make_plots )
 %   @param[in] filepaths, a struct with strings for feet A, B, C, and D
 %   @param[in] make_plots, a flag that controls creation of graphs of the data or not
 %   @retvar[out] fpdata, a cell array will all the force plate data nicely organized.
+
+% AS OF MARCH 1: this also takes in the hardware data.
 
 % The column to read is different for each foot marker.
 % For the respective test, the column with the Y data for its marker is:
@@ -29,6 +31,30 @@ alldatatemp = csvread( filepaths.C, 2, 0);
 markerdata{3} = [alldatatemp(:,2), alldatatemp(:, markerYcols(3))];
 alldatatemp = csvread( filepaths.D, 2, 0);
 markerdata{4} = [alldatatemp(:,2), alldatatemp(:, markerYcols(4))];
+
+% Read in the hardware data. Each foot ending string will be (A,B.C,D)
+footHWstring{1} = ' Front Right Blue.txt';
+footHWstring{2} = ' Front Left Orange.txt';
+footHWstring{3} = ' Back Right Purple.txt';
+footHWstring{4} = ' Back Left Red.txt';
+
+% Programattically create file paths and read in each set of five tests
+% Feet 1-4 are A-D in that order
+footHWdata = {};
+for i=1:4
+    % for this leg
+    for j=1:5
+        % for this test
+        % Concatenate string
+        currentHWpath = strcat(logfile_hardware_base, 'Test', num2str(j), ...
+            footHWstring{i});
+        % Read in csv
+        footHWdata{i}{j} = csvread(currentHWpath);
+    end
+end
+
+% Great. Now, let's make a big 2D array of the timepoints at which the legs
+% lift.
 
 % now that we have the rotation/ foot lift data, plot some combinations of
 % it:
