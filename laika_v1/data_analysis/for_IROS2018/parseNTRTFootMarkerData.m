@@ -102,6 +102,13 @@ gearratio = 0.625 / 1.5; % 0.4167
 % and adjust all the hw lift angles
 hwLiftAngles = hwLiftAngles .* gearratio;
 
+% CORRECTION: Drew looked, and thinks that we double-counted the encoder
+% ticks. Looking at the simulation, the vertebrae moving 1 rad = 50 degrees
+% is twice the sort of angles we had. 
+% So, correct encoder ticks for now. To-do is calibrate encoder ticks in
+% code vs. actual vertebra positions.
+hwLiftAngles = hwLiftAngles .* 0.5;
+
 % now that we have the rotation/ foot lift data, plot some combinations of
 % it:
 if( make_plots )
@@ -147,10 +154,12 @@ if( make_plots )
     % 27 seconds, which is 2650.
     % Actually, let's make it much before that, so no vibrations. (2500)
     % for the SI units: about
-    finalIndexA = 1620;
+    %finalIndexA = 1620;
+    finalIndexA = 2470;
     hold on;
     % Let's do foot D also
-    finalIndexD = 1620;
+    %finalIndexD = 1620;
+    finalIndexD = 2500;
     
     % Here, we need to subtract the first datapoint (the offset!) from
     % everything. The offset value is the second column (radians)
@@ -177,36 +186,36 @@ if( make_plots )
     title('Foot Height with CCW Rotation');
     ylabel('Foot Height (cm)');
     xlabel('Center Vert. Rotation (rad)');
-    legend('Foot A, Left Bend (Sim)', 'Foot D, Right Bend (Sim)', 'Location', 'Best');
+    legend('Foot A, Left Bend', 'Foot D, Right Bend', 'Location', 'Northwest');
     % Set the limits:
     ylim([0 5]);
     %xlim([0 0.5]);
     
     %%%%%% SIMULATION VERTICAL LINES
-%     % Draw vertical lines for the places where we first observe the feet to
-%     % lift.
-%     % Specify some 'epsilon' for 'has lifted'. In cm.
-%     eps_lifted = 0.1;
-%     % get the index for the element which is larger than this epsilon.
-%     % The greater-than operator returns a list of bools, so we find the
-%     % first "true", subject to our index range constraints.
-%     %markerdata{1}(startIndex:finalIndexA,2) 
-%     lifted_A = find(markerdata{1}(startIndex:finalIndexA,2) > eps_lifted, 1);
-%     lifted_D = find(markerdata{4}(startIndex:finalIndexD,2) > eps_lifted, 1);
-%     % These need to be incremented by startIndex, since that's offset
-%     lifted_A = lifted_A + startIndex;
-%     lifted_D = lifted_D + startIndex;
-%     
-%     % The x-axis point is the first-column of the data at the lifted_X
-%     % index
-%     % Print these to the terminal for recording later
-%     lifted_A_rad = markerdata{1}(lifted_A, 1)
-%     lifted_D_rad = markerdata{4}(lifted_D, 1)
-%     % Credit to Brandon Kuczenski for the vline function
-%     vline( lifted_A_rad, 'b--', 'lift',18);
-%     vline( lifted_D_rad, 'r--', 'lift',18);
-%     %vline(12, 'k--', 't_2',18);
-%     %vline(17, 'k--', 't_3',18);
+    % Draw vertical lines for the places where we first observe the feet to
+    % lift.
+    % Specify some 'epsilon' for 'has lifted'. In cm.
+    eps_lifted = 0.1;
+    % get the index for the element which is larger than this epsilon.
+    % The greater-than operator returns a list of bools, so we find the
+    % first "true", subject to our index range constraints.
+    %markerdata{1}(startIndex:finalIndexA,2) 
+    lifted_A = find(markerdata{1}(startIndex:finalIndexA,2) > eps_lifted, 1);
+    lifted_D = find(markerdata{4}(startIndex:finalIndexD,2) > eps_lifted, 1);
+    % These need to be incremented by startIndex, since that's offset
+    lifted_A = lifted_A + startIndex;
+    lifted_D = lifted_D + startIndex;
+    
+    % The x-axis point is the first-column of the data at the lifted_X
+    % index
+    % Print these to the terminal for recording later
+    lifted_A_rad = markerdata{1}(lifted_A, 1)
+    lifted_D_rad = markerdata{4}(lifted_D, 1)
+    % Credit to Brandon Kuczenski for the vline function
+    %vline( lifted_A_rad, 'b--', 'lift',18);
+    %vline( lifted_D_rad, 'r--', 'lift',18);
+    %vline(12, 'k--', 't_2',18);
+    %vline(17, 'k--', 't_3',18);
 
 
     %%%%%% HARDWARE VERTICAL LINES
@@ -220,10 +229,10 @@ if( make_plots )
     liftMaxD = - min(hwLiftAngles(4,:));
     
     % Plot temporarily in blue for A and red for D
-    vline( liftMinA, 'b--', 'lift',18);
-    vline( liftMaxA, 'b--', 'lift',18);
-    vline( liftMinD, 'r--', 'lift',18);
-    vline( liftMaxD, 'r--', 'lift',18);
+    vline( liftMinA, 'b--', ' ',18);
+    vline( liftMaxA, 'b--', ' ',18);
+    vline( liftMinD, 'r--', ' ',18);
+    vline( liftMaxD, 'r--', ' ',18);
     
     hold off;
     
@@ -238,9 +247,11 @@ if( make_plots )
     tstart = 5;
     startIndex = tstart/dt;
     % B/C plots
-    finalIndexB = 2950;
+    %finalIndexB = 2950;
+    finalIndexB = 3590;
     hold on;
-    finalIndexC = 2550;
+    %finalIndexC = 2550;
+    finalIndexC = 3800;
     
     % Here, we need to subtract the first datapoint (the offset!) from
     % everything. The offset value is the second column (radians)
@@ -267,39 +278,39 @@ if( make_plots )
     title('Foot Height with CW Rotation');
     ylabel('Foot Height (cm)');
     xlabel('Center Vert. Rotation (rad)');
-    legend('Foot B, Left Bend (Sim)', 'Foot C, Right Bend (Sim)', 'Location', 'Best');
+    legend('Foot B, Left Bend', 'Foot C, Right Bend', 'Location', 'Northwest');
     % Set the limits:
     ylim([0 5]);
-    %xlim([0 0.5]);
+    xlim([0 0.6]);
     
     
     %%%%%%%%%%% SIMULATION VERTICAL LINES
-%     % Draw vertical lines for the places where we first observe the feet to
-%     % lift.
-%     % Specify some 'epsilon' for 'has lifted'. In cm.
-%     eps_lifted = 0.1;
-%     % get the index for the element which is larger than this epsilon.
-%     % The greater-than operator returns a list of bools, so we find the
-%     % first "true", subject to our index range constraints.
-%     %markerdata{1}(startIndex:finalIndexA,2) 
-%     lifted_B = find(markerdata{2}(startIndex:finalIndexB,2) > eps_lifted, 1);
-%     lifted_C = find(markerdata{3}(startIndex:finalIndexC,2) > eps_lifted, 1);
-%     % These need to be incremented by startIndex, since that's offset
-%     lifted_B = lifted_B + startIndex;
-%     lifted_C = lifted_C + startIndex;
-%     
-%     % The x-axis point is the first-column of the data at the lifted_X
-%     % index
-%     % Print these to the terminal for recording later
-%     lifted_B_rad = markerdata{2}(lifted_B, 1)
-%     lifted_C_rad = markerdata{3}(lifted_C, 1)
-%     
-%     % Credit to Brandon Kuczenski for the vline function
-%     vline( lifted_B_rad, '--', 'lift',18);
-%     vline( lifted_C_rad, '--', 'lift',18);
-%     %vline(12, 'k--', 't_2',18);
-%     %vline(17, 'k--', 't_3',18);
-%     hold off;
+    % Draw vertical lines for the places where we first observe the feet to
+    % lift.
+    % Specify some 'epsilon' for 'has lifted'. In cm.
+    eps_lifted = 0.1;
+    % get the index for the element which is larger than this epsilon.
+    % The greater-than operator returns a list of bools, so we find the
+    % first "true", subject to our index range constraints.
+    %markerdata{1}(startIndex:finalIndexA,2) 
+    lifted_B = find(markerdata{2}(startIndex:finalIndexB,2) > eps_lifted, 1);
+    lifted_C = find(markerdata{3}(startIndex:finalIndexC,2) > eps_lifted, 1);
+    % These need to be incremented by startIndex, since that's offset
+    lifted_B = lifted_B + startIndex;
+    lifted_C = lifted_C + startIndex;
+    
+    % The x-axis point is the first-column of the data at the lifted_X
+    % index
+    % Print these to the terminal for recording later
+    lifted_B_rad = markerdata{2}(lifted_B, 1)
+    lifted_C_rad = markerdata{3}(lifted_C, 1)
+    
+    % Credit to Brandon Kuczenski for the vline function
+    %vline( lifted_B_rad, '--', 'lift',18);
+    %vline( lifted_C_rad, '--', 'lift',18);
+    %vline(12, 'k--', 't_2',18);
+    %vline(17, 'k--', 't_3',18);
+    %hold off;
 
     %%%%%% HARDWARE VERTICAL LINES
     
@@ -312,13 +323,17 @@ if( make_plots )
     liftMinC = min(hwLiftAngles(3,:));
     
     % Plot temporarily in yellow for B and magenta for C
-    vline( liftMinB, 'y--', 'lift',18);
-    vline( liftMaxB, 'y--', 'lift',18);
-    vline( liftMinC, 'm--', 'lift',18);
-    vline( liftMaxC, 'm--', 'lift',18);
+    % was 'lift'
+    bminline = vline( liftMinB, 'y--', ' ',18);
+    bmaxline = vline( liftMaxB, 'y--', ' ',18);
+    vline( liftMinC, 'm--', ' ',18);
+    vline( liftMaxC, 'm--', ' ',18);
+    
+    % try setting better colors for the B line
+    bminline.Color = colorB;
+    bmaxline.Color = colorB;
 
 end
-
 
 
 

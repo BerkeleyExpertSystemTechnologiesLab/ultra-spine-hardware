@@ -16,7 +16,8 @@ addpath('./hline_vline');
 
 % The log file base path:
 % we assume we're using the data in this repository
-logfile_base = './NTRTdata/footlifting_90percent_horiz/SI/LaikaIROS2018MarkerData';
+%logfile_base = './NTRTdata/footlifting_90percent_horiz/SI/LaikaIROS2018MarkerData';
+logfile_base = './NTRTdata/footlifting_80percent_horiz/SI/LaikaIROS2018MarkerData';
 logfile_hardware_base = './HardwareExperimentData/';
 
 % We're going for four files, one from each foot lifting test. 
@@ -29,16 +30,16 @@ logfile_hardware_base = './HardwareExperimentData/';
 %tC = '02242018_124133';
 %tD = '02242018_124628';
 % For the SI units model:
-tA = '02262018_131202';
-tB = '02262018_131253';
-tC = '02262018_132328';
-tD = '02262018_132652';
+tA = '03012018_174508';
+tB = '03012018_174252';
+tC = '03012018_174035';
+tD = '03012018_173738';
 
 % We can now build up the paths to each file
-filepaths.A = strcat(logfile_base, 'A_0.9_', tA, '.txt');
-filepaths.B = strcat(logfile_base, 'B_0.9_', tB, '.txt');
-filepaths.C = strcat(logfile_base, 'C_0.9_', tC, '.txt');
-filepaths.D = strcat(logfile_base, 'D_0.9_', tD, '.txt');
+filepaths.A = strcat(logfile_base, 'A_0.8_', tA, '.txt');
+filepaths.B = strcat(logfile_base, 'B_0.8_', tB, '.txt');
+filepaths.C = strcat(logfile_base, 'C_0.8_', tC, '.txt');
+filepaths.D = strcat(logfile_base, 'D_0.8_', tD, '.txt');
 
 % A flag to control making plots or not
 make_plots = 1;

@@ -40,4 +40,17 @@ filename = 'motor_data_ramp_dt01_tt_40_max_pi4';
 total_time = 40.0;
 max = -pi/4; % radians
 filename = 'motor_data_ramp_dt01_tt_40_max_neg_pi4';
+%example_data = motor_data_ramp(sampling_time, total_time, max, filename);
+
+% Laika IROS2018 model, traj up to 1 rad, which is foot lifting in hardware
+total_time = 40.0;
+max = 1; % radians
+filename = 'motor_data_ramp_dt01_tt_40_max_1rad';
+%example_data = motor_data_ramp(sampling_time, total_time, max, filename);
+
+total_time = 40.0;
+max = -1; % radians
+filename = 'motor_data_ramp_dt01_tt_40_max_neg_1rad';
 example_data = motor_data_ramp(sampling_time, total_time, max, filename);
+
+
