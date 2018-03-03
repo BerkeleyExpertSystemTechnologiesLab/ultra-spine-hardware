@@ -21,10 +21,6 @@
    Connect SDA to analog 4
    Connect VDD to 3.3-5V DC
    Connect GROUND to common ground
-
-   History
-   =======
-   2015/MAR/03  - First release (KTOWN)
 */
 
 /* Set the delay between fresh samples */
@@ -54,11 +50,6 @@ void displaySensorDetails(void)
   delay(500);
 }
 
-/**************************************************************************/
-/*
-    Arduino setup function (automatically called at startup)
-*/
-/**************************************************************************/
 void setup(void)
 {
   Serial.begin(9600);
@@ -81,12 +72,6 @@ void setup(void)
   displaySensorDetails();
 }
 
-/**************************************************************************/
-/*
-    Arduino loop function, called once 'setup' is complete (your own code
-    should go here)
-*/
-/**************************************************************************/
 void loop(void)
 {
   /* Get a new sensor event */
@@ -113,14 +98,19 @@ void loop(void)
   Serial.print((float)event.orientation.z);
   Serial.println(F(""));
 
-//  imu:: Vector<3> grav = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
-//  Serial.print(F("Gravity Vector: "));
-//  Serial.print((float) grav.x());
-//  Serial.print(F(" "));
-//  Serial.print((float) grav.y());
-//  Serial.print(F(" "));
-//  Serial.print((float) grav.z());
-//  Serial.println(F(""));
+  // change imu:: Vector<3>  __variable name__ = bno.getVector(Adafruit_BNO055::__output_info__);
+  // outputs: VECTOR_MAGNETOMETER(uT), VECTOR_GYROSCOPE(radians per sec), 
+  // VECTOR_EULER(degrees), VECTOR_ACCERLEROMETER(m/s^2), VECTOR_LINEARACCEL(m/s^2)
+  // VECTOR_GRAVITY(m/s^2)
+  
+  imu:: Vector<3> grav = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+  Serial.print(F("Gravity Vector: "));
+  Serial.print((float) grav.x());
+  Serial.print(F(" "));
+  Serial.print((float) grav.y());
+  Serial.print(F(" "));
+  Serial.print((float) grav.z());
+  Serial.println(F(""));
 
   imu:: Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   Serial.print(F("Accelerometer Vector: "));
@@ -149,6 +139,29 @@ void loop(void)
   Serial.print(F(" "));
   Serial.println(mag, DEC);
 
+
+//  Return Quaternion
+//
+//  imu::Quaternion quat = bno.getQuat(); 
+//  /* Display the quat data */
+//  Serial.print("qW: ");
+//  Serial.print(quat.w(), 4);
+//  Serial.print(" qX: ");
+//  Serial.print(quat.y(), 4);
+//  Serial.print(" qY: ");
+//  Serial.print(quat.x(), 4);
+//  Serial.print(" qZ: ");
+//  Serial.print(quat.z(), 4);
+//  Serial.println("");
+
+//  /* Display the current temperature */
+//  int8_t temp = bno.getTemp();
+//   
+//  Serial.print("Current Temperature: ");
+//  Serial.print(temp);
+//  Serial.println(" C");
+//  Serial.println("");
+  
   delay(BNO055_SAMPLERATE_DELAY_MS);
 }
 
