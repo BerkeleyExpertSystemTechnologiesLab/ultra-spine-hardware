@@ -1,9 +1,10 @@
-% IROS2018simdata.m
+% FootLift2018simdata.m
 % A helper script file that takes in data from 
 % the NASA Tensegrity Robotics Toolkit simulations of Laika and its
 % foot vs. vertebra rotation positions.
 %   Andrew P. Sabelhaus
 %   Berkeley Emergent Space Tensegrities Lab
+% August 2018: expect this script to be used for ICRA 2019 too.
 
 % Clean up the workspace
 clear all;
@@ -17,7 +18,9 @@ addpath('./hline_vline');
 % The log file base path:
 % we assume we're using the data in this repository
 %logfile_base = './NTRTdata/footlifting_90percent_horiz/SI/LaikaIROS2018MarkerData';
-logfile_base = './NTRTdata/footlifting_80percent_horiz/SI/LaikaIROS2018MarkerData';
+%logfile_base = './NTRTdata/footlifting_80percent_horiz/SI/ICRA2019/LaikaIROS2018MarkerData';
+% For ICRA 2019, we use new labels:
+logfile_base = './NTRTdata/footlifting_80percent_horiz/SI/ICRA2019/LaikaICRA2019MarkerData';
 logfile_hardware_base = './HardwareExperimentData/';
 
 % We're going for four files, one from each foot lifting test. 
@@ -30,10 +33,27 @@ logfile_hardware_base = './HardwareExperimentData/';
 %tC = '02242018_124133';
 %tD = '02242018_124628';
 % For the SI units model:
-tA = '03012018_174508';
-tB = '03012018_174252';
-tC = '03012018_174035';
-tD = '03012018_173738';
+%tA = '08232018_154644';
+%tB = '09062018_153626_max';
+%tC = '08232018_164351';
+%tD = '08232018_160212';
+
+% for the ICRA 2019 tests:
+% Minimum (216), with the bottom at 810:
+% tA = '09072018_101630_min_810';
+% tB = '09072018_101903_min_810';
+% tC = '09072018_101725_min_810';
+% tD = '09072018_102033_min_810';
+% Minimum (216), with the bottom at 941:
+% tA = '09072018_095733_min_941';
+% tB = '09072018_100048_min_941';
+% tC = '09072018_095849_min_941';
+% tD = '09072018_100213_min_941';
+% Maximum (258), with bottom at 941:
+tA = '09072018_110001_max_941';
+tB = '09072018_110256_max_941';
+tC = '09072018_110101_max_941';
+tD = '09072018_110434_max_941';
 
 % We can now build up the paths to each file
 filepaths.A = strcat(logfile_base, 'A_0.8_', tA, '.txt');

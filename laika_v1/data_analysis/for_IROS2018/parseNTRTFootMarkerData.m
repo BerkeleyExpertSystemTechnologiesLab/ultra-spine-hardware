@@ -96,18 +96,21 @@ for i=1:4
 end
 
 % note, these are in terms of output shaft rotations for the motor.
-% need to convert via the gear ratio of the center gear, which is 
+% need to convert via the gear ratio of the center gear.
+
+% As submitted originally, we had these calculations wrong. We
+% single-counted the motor's encoder ticks, but double-counted in this
+% script, as in:
+%hwLiftAngles = hwLiftAngles .* 0.5;
+% However, that's incorrect. Instead, we actually needed to use the proper
+% gear ratio for the center vertebra. Originally, we had:
 % 0.625 inch / 1.5 inch, or
-gearratio = 0.625 / 1.5; % 0.4167
+%gearratio = 0.625 / 1.5; % 0.4167
+% ...but it really is 1/4, or
+gearratio = 0.25;
+
 % and adjust all the hw lift angles
 hwLiftAngles = hwLiftAngles .* gearratio;
-
-% CORRECTION: Drew looked, and thinks that we double-counted the encoder
-% ticks. Looking at the simulation, the vertebrae moving 1 rad = 50 degrees
-% is twice the sort of angles we had. 
-% So, correct encoder ticks for now. To-do is calibrate encoder ticks in
-% code vs. actual vertebra positions.
-hwLiftAngles = hwLiftAngles .* 0.5;
 
 % now that we have the rotation/ foot lift data, plot some combinations of
 % it:
@@ -155,11 +158,24 @@ if( make_plots )
     % Actually, let's make it much before that, so no vibrations. (2500)
     % for the SI units: about
     %finalIndexA = 1620;
-    finalIndexA = 2470;
+    %finalIndexA = 2470;
+    %finalIndexA = 2669;
     hold on;
     % Let's do foot D also
     %finalIndexD = 1620;
-    finalIndexD = 2500;
+    %finalIndexD = 2500;
+    %finalIndexD = 2846;
+    
+    % For the ICRA 2019 data:
+    % Min (216), at bottom = 810:
+%     finalIndexA = 2212;
+%     finalIndexD = 2546;
+    % Min (216) at bottom = 941:
+%     finalIndexA = 2355;
+%     finalIndexD = 2664;
+    % Max (258) at bottom = 941"
+    finalIndexA = 2726;
+    finalIndexD = 2848;
     
     % Here, we need to subtract the first datapoint (the offset!) from
     % everything. The offset value is the second column (radians)
@@ -189,7 +205,7 @@ if( make_plots )
     legend('Foot A, Left Bend', 'Foot D, Right Bend', 'Location', 'Northwest');
     % Set the limits:
     ylim([0 5]);
-    %xlim([0 0.5]);
+    xlim([0 0.7]);
     
     %%%%%% SIMULATION VERTICAL LINES
     % Draw vertical lines for the places where we first observe the feet to
@@ -248,11 +264,26 @@ if( make_plots )
     startIndex = tstart/dt;
     % B/C plots
     %finalIndexB = 2950;
-    finalIndexB = 3590;
+    %finalIndexB = 3590;
+    %finalIndexB = 4391;
+    %finalIndexB = 4192;
     hold on;
     %finalIndexC = 2550;
-    finalIndexC = 3800;
+    %finalIndexC = 3800;
+    %finalIndexC = 4336;
+    %finalIndexC = 3967;
     
+    % For the ICRA 2019 data:
+    % Min (216), at bottom = 810:
+%     finalIndexB = 3184;
+%     finalIndexC = 3741;
+    % Min (216), at bottom = 941:
+%     finalIndexB = 3883;
+%     finalIndexC = 4135;
+    % Max (258) at bottom = 941:
+    finalIndexB = 4306;
+    finalIndexC = 4252;
+
     % Here, we need to subtract the first datapoint (the offset!) from
     % everything. The offset value is the second column (radians)
     offsetB = markerdata{2}(startIndex, 2);
@@ -281,7 +312,8 @@ if( make_plots )
     legend('Foot B, Left Bend', 'Foot C, Right Bend', 'Location', 'Northwest');
     % Set the limits:
     ylim([0 5]);
-    xlim([0 0.6]);
+    %xlim([0 0.6]);
+    xlim([0, 0.7]);
     
     
     %%%%%%%%%%% SIMULATION VERTICAL LINES
