@@ -50,10 +50,23 @@ logfile_hardware_base = './HardwareExperimentData/';
 % tC = '09072018_095849_min_941';
 % tD = '09072018_100213_min_941';
 % Maximum (258), with bottom at 941:
-tA = '09072018_110001_max_941';
-tB = '09072018_110256_max_941';
-tC = '09072018_110101_max_941';
-tD = '09072018_110434_max_941';
+% tA = '09072018_110001_max_941';
+% tB = '09072018_110256_max_941';
+% tC = '09072018_110101_max_941';
+% tD = '09072018_110434_max_941';
+
+% For the set of 20 tests for ICRA 2019:
+% Tests 1-4 (min tension):
+% tA = '09072018_121117_1';
+% tB = '09072018_121254_2';
+% tC = '09072018_121443_3';
+% tD = '09072018_121617_4';
+
+% Tests 17-20 (max tension):
+tA = '09072018_155508_17';
+tB = '09072018_155654_18';
+tC = '09072018_160032_19';
+tD = '09072018_160252_20';
 
 % We can now build up the paths to each file
 filepaths.A = strcat(logfile_base, 'A_0.8_', tA, '.txt');
