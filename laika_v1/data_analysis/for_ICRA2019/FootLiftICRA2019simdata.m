@@ -135,12 +135,16 @@ end
 
 % For a quick test: can we get the old plotting to work, just iteratively
 % now, for all 5 tests?
-for i = 1:5
-    % test i
-    plotFootMarkerDataSingleTest(markerdata_all{i}, finalTimeIndices(i,:), hwLiftAngles);
-end
+% for i = 1:5
+%     % test i
+%     plotFootMarkerDataSingleTest(markerdata_all{i}, finalTimeIndices(i,:), hwLiftAngles);
+% end
+% ...great, that works. Now, do the subplot figure instead;
+
+plotFootMarkerDataMultipleTest(markerdata_all, finalTimeIndices, hwLiftAngles);
 
         
+% original call to the parser, for reference:
 %[markerdata, footHWdata, hwTimes, hwLiftAngles] = parseNTRTFootMarkerDataMany(filepaths, logfile_hardware_base, finalTimeIndices, make_plots);
 
 
