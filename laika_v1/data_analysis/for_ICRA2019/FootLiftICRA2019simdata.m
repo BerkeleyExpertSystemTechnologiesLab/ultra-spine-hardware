@@ -93,7 +93,7 @@ end
 % finalTimeIndices = [ 2220; %1, A  
 %                     3634; %2, B
 %                     2980; %3, C
-%                     2980; %4, D
+%                     2317; %4, D
 %                     2129; %5, A
 %                     3445; %6, B
 %                     3453; %7, C
@@ -111,30 +111,34 @@ end
 %                     4370; %19, C
 %                     2910]; %20, D
                 
-finalTimeIndices = [ 2220, 3634, 2980, 2980; %1-4, A-D
+finalTimeIndices = [ 2220, 3634, 2980, 2317; %1-4, A-D
                     2129, 3445, 3453, 2492; %5-8
                     2428, 3915, 3966, 2643; %9-12
                     2643, 4299, 4232, 2794; %13-16
                     2787, 4530, 4370, 2910]; %17-20
 
-% A flag to control making plots or not
-% ...we are going to make plots later, so keep off.
-make_plots = 0;
-
 % Call the parser function on each set of data.
 % the results will be stored as:
-markerdata = {};
+markerdata_all = {};
 
 % we've got 5 sets of tests.
 for i = 1:5
     % call the parser
-    markerdata{i} = parseNTRTFootMarkerDataOnly(filepaths{i});
+    markerdata_all{i} = parseNTRTFootMarkerDataOnly(filepaths{i});
 end
 
 % Since there is only one set of hardware data, we only need to parse it
 % once:
 [footHWdata, hwTimes, hwLiftAngles] = parseHardwareFootLiftData(logfile_hardware_base);
 
+% Finally, plotting!
+
+% For a quick test: can we get the old plotting to work, just iteratively
+% now, for all 5 tests?
+for i = 1:5
+    % test i
+    plotFootMarkerDataSingleTest(markerdata_all{i}, finalTimeIndices(i,:), hwLiftAngles);
+end
 
         
 %[markerdata, footHWdata, hwTimes, hwLiftAngles] = parseNTRTFootMarkerDataMany(filepaths, logfile_hardware_base, finalTimeIndices, make_plots);
